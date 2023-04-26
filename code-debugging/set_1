@@ -1,0 +1,514 @@
+NEW
+--------------------------
+class Solution {
+    public boolean isPalindrome(int x) {
+        String s = String.valueOf(x); // Convert to String
+        int n = s.length(); // Store the String length to int n
+
+        for (int i=0; i<n/2; i++) { 
+            if (s.charAt(i) == s.charAt(n-i-1)) return false;
+        }
+
+        return true;
+    }
+}
+Trying to find whether given input is palindrome or not
+But not getting the correct output. Could you let me know where I am going wrong
+--------------------------
+You have a small mistake in your code. You should return false when the characters are not equal, and true at the end of the loop if no mismatches are found. You currently have the conditions reversed. Here's the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public boolean isPalindrome(int x) {
+        String s = String.valueOf(x); // Convert to String
+        int n = s.length(); // Store the String length to int n
+
+        for (int i=0; i<n/2; i++) { 
+            if (s.charAt(i) != s.charAt(n-i-1)) return false; // Return false when characters are not equal
+        }
+
+        return true; // Return true if no mismatches are found
+    }
+}
+
+
+Now the code should work as expected and return the correct output for whether the given input is a palindrome or not.
+--------------------------
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] arr=new int[2];
+        Map<Integer,Integer> m=new HashMap<>();
+        for(int i=0;i<nums.length;i++) {
+            int val=target-nums[i];
+            if(m.containsKey(val)) {
+                arr[0]=m.get(val);
+                arr[1]=m.get(i);
+            }
+            m.put(nums[i],i);
+        }
+        return arr;
+    }
+}
+Trying to find two indices that add up to the target. But getting null pointer issue. 
+Could you explain me where I am going wrong
+--------------------------
+You have a small mistake in your code. When you find the two indices that add up to the target, you should set arr[1] to i instead of m.get(i). Here's the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] arr = new int[2];
+        Map<Integer, Integer> m = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int val = target - nums[i];
+            if (m.containsKey(val)) {
+                arr[0] = m.get(val);
+                arr[1] = i; // Set arr[1] to i instead of m.get(i)
+                break; // Break the loop once the pair is found
+            }
+            m.put(nums[i], i);
+        }
+        return arr;
+    }
+}
+
+
+Now the code should work as expected and return the correct output for two indices that add up to the target without any null pointer issues.
+--------------------------
+class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> stack=new Stack<>();
+        for(int i=0;i<s.length();i++) {
+            if(s.charAt(i) == '(' || s.charAt(i) == '[' || s.charAt(i) == '{') {
+                stack.push(s.charAt(i));
+            }
+            else if(s.charAt(i)==')' && !stack.isEmpty() && stack.peek()=='(') {
+                stack.pop();
+            }
+            else if(s.charAt(i)=='}' && !stack.isEmpty() && stack.peek()=='{') {
+                stack.pop();
+            }
+            else if(s.charAt(i)==']' && !stack.isEmpty() && stack.peek()=='[') {
+                stack.pop();
+            }
+        }
+        return false;
+    }
+}
+Trying to find if the input string is a valid paranthesis or not
+But getting wrong output why is it
+--------------------------
+Your code is almost correct. You just need to return true if the stack is empty at the end of the loop, which means the input string has valid parentheses. Currently, you're always returning false. Here's the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(' || s.charAt(i) == '[' || s.charAt(i) == '{') {
+                stack.push(s.charAt(i));
+            } else if (s.charAt(i) == ')' && !stack.isEmpty() && stack.peek() == '(') {
+                stack.pop();
+            } else if (s.charAt(i) == '}' && !stack.isEmpty() && stack.peek() == '{') {
+                stack.pop();
+            } else if (s.charAt(i) == ']' && !stack.isEmpty() && stack.peek() == '[') {
+                stack.pop();
+            } else {
+                return false; // Return false if a closing parenthesis is encountered without a matching opening one
+            }
+        }
+        return stack.isEmpty(); // Return true if the stack is empty, indicating valid parentheses
+    }
+}
+
+
+Now the code should work as expected and return the correct output for whether the input string has valid parentheses or not.
+--------------------------
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int cur=0;
+        for(int i=0;i<nums.length;i++) {
+            if(nums[i]!=nums[cur]) {
+                nums[cur]=nums[i];
+            }
+        }
+        return cur+1;
+    }
+}
+Removing duplicates from sorted array input.
+But not getting correct output. Could you explain why and tell me any other optimal way to solve or is this the optimal method
+--------------------------
+Your approach to solving the problem is correct, but there is a small mistake in your code. You should increment cur after updating nums[cur] with nums[i]. Here's the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        if (nums.length == 0) return 0; // Handle empty array case
+
+        int cur = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[cur]) {
+                cur++;
+                nums[cur] = nums[i];
+            }
+        }
+        return cur + 1;
+    }
+}
+
+
+This approach is one of the optimal ways to solve the problem. It has a time complexity of O(n) and a space complexity of O(1), as it does not use any additional data structures and only modifies the input array in place.
+--------------------------
+class Solution {
+    public int mySqrt(int x) {
+        if(x==0) return 0;
+        if(x<4) return 1;
+        int start=1,end=x;
+        int ans=0;
+        while(start<=end) {
+            int mid=(start+end)/2;
+            if(x/mid==mid) return mid;
+            else if(x/mid<mid) end=mid-1;
+            else {
+                start=mid+1;
+            }
+        }
+        return ans;
+    }
+}
+Finding square root
+Explain me where I am going wrong
+--------------------------
+Your approach to solving the problem using binary search is correct, but there is a small mistake in your code. You should update the ans variable when you find a mid value that doesn't satisfy the condition x / mid == mid. Here's the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public int mySqrt(int x) {
+        if (x == 0) return 0;
+        if (x < 4) return 1;
+        int start = 1, end = x;
+        int ans = 0;
+        while (start <= end) {
+            int mid = (start + end) / 2;
+            if (x / mid == mid) {
+                return mid;
+            } else if (x / mid < mid) {
+                end = mid - 1;
+            } else {
+                start = mid + 1;
+                ans = mid; // Update ans variable with the current mid value
+            }
+        }
+        return ans;
+    }
+}
+
+
+Now the code should work as expected and return the correct output for the square root of the input integer.
+--------------------------
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i=m-1;
+        int j=n-1;
+        int k=n+m-1;
+        while(i>=0 && j>=0) {
+            if(nums1[i]>nums2[j]) {
+                nums1[k--]+=nums1[i--];
+            }
+            else {
+                nums1[k--]=nums2[j--];
+            }
+        }
+        while(j>=0) {
+            nums1[k--]=nums2[j--];
+        }
+    }
+}
+--------------------------
+Your approach for merging the two arrays is correct. However, there is a small mistake in your code when assigning the larger value of nums1[i] and nums2[j] to nums1[k]. You should directly assign the value instead of adding it to the current value at index k. Here's the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i = m - 1;
+        int j = n - 1;
+        int k = m + n - 1;
+        while (i >= 0 && j >= 0) {
+            if (nums1[i] > nums2[j]) {
+                nums1[k--] = nums1[i--]; // Directly assign the value
+            } else {
+                nums1[k--] = nums2[j--];
+            }
+        }
+        while (j >= 0) {
+            nums1[k--] = nums2[j--];
+        }
+    }
+}
+
+
+Now the code should work as expected and merge the two input arrays correctly.
+--------------------------
+int arraySize = digits.length;
+        boolean allNines = IntStream.of(digits).sum()/digits.length==9;
+        int carry = 0;
+        if (allNines){
+            arraySize = arraySize+1;
+            int[] result = new int[arraySize];
+            result[0]= 1;
+            return result;
+        }
+        int[] result = new int[arraySize];
+        for (int i=arraySize-1; i>=0; i--){
+            if (i==arraySize-1){
+                if (digits[i]+1==10){
+                    carry = 1;
+                    result[i] = 0;
+                }else{
+                    result[i] = digits[i];
+                }
+            }else if (digits[i]+carry==10){
+                digits[i] = 0;
+            }else{
+                result[i] += carry+digits[i];
+                carry=0;
+            }
+        }
+        return result;
+Leetcode plusOne problem
+Not sure where I am going wrong. Could you help me with that and also tell me any optimal solution
+--------------------------
+There are a few issues with your code:
+
+You are not adding 1 to the last digit in the else condition of your first if block inside the loop.
+You should break the loop when there is no carry left.
+You missed the case when the first digit has a carry after adding 1.
+
+Here's the corrected version of your code:
+
+java
+Copy code
+int arraySize = digits.length;
+boolean allNines = IntStream.of(digits).sum() / digits.length == 9;
+int carry = 0;
+if (allNines) {
+    arraySize = arraySize + 1;
+    int[] result = new int[arraySize];
+    result[0] = 1;
+    return result;
+}
+int[] result = new int[arraySize];
+for (int i = arraySize - 1; i >= 0; i--) {
+    if (i == arraySize - 1) {
+        if (digits[i] + 1 == 10) {
+            carry = 1;
+            result[i] = 0;
+        } else {
+            result[i] = digits[i] + 1; // Add 1 to the last digit
+        }
+    } else if (digits[i] + carry == 10) {
+        result[i] = 0;
+        carry = 1;
+    } else {
+        result[i] = carry + digits[i];
+        carry = 0;
+    }
+    if (carry == 0) { // Break the loop when there is no carry left
+        break;
+    }
+}
+
+// Handle the case when the first digit has a carry after adding 1
+if (carry == 1) {
+    int[] newResult = new int[arraySize + 1];
+    System.arraycopy(result, 0, newResult, 1, arraySize);
+    newResult[0] = 1;
+    return newResult;
+}
+
+return result;
+
+
+This solution is good enough and should pass the LeetCode tests. The time complexity is O(n), where n is the length of the input array. There might be more concise solutions, but they would have the same time complexity.
+--------------------------
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for(int i=0;i<nums1.length;i++){
+            for(int j=0;j<nums2.length;j++){
+                if(nums1[i]!=nums2[j]){
+                    list.add(nums1[i]);
+                }
+            }
+        }
+        ArrayList<Integer> newList = new ArrayList<Integer>();
+        for (int  element : list) {
+            if (!newList.contains(element)) {
+  
+                newList.add(element);
+            }
+        }
+        int[] arr = new int[newList.size()];
+        for(int i=0;i<newList.size();i++){
+            arr[i] = newList.get(i)+newList.get(i);
+        }
+        return arr;
+    }
+}
+Explain me the errors and also there any other logic which provides optimal solution If so you also tell me that
+--------------------------
+There are a few issues in your current implementation:
+
+You are checking for nums1[i] != nums2[j] inside the nested loops, but you should be checking for equality.
+You are adding elements twice to the arr array in the last loop.
+
+Here's a corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < nums1.length; i++) {
+            for (int j = 0; j < nums2.length; j++) {
+                if (nums1[i] == nums2[j]) { // Check for equality instead of inequality
+                    list.add(nums1[i]);
+                    break; // Break the inner loop to avoid adding duplicates from nums2
+                }
+            }
+        }
+        ArrayList<Integer> newList = new ArrayList<Integer>();
+        for (int element : list) {
+            if (!newList.contains(element)) {
+                newList.add(element);
+            }
+        }
+        int[] arr = new int[newList.size()];
+        for (int i = 0; i < newList.size(); i++) {
+            arr[i] = newList.get(i); // Just assign the element without adding it twice
+        }
+        return arr;
+    }
+}
+
+
+However, this solution has a time complexity of O(n^2) due to the nested loops. You can optimize the solution using HashSet. Here's a more optimal solution:
+
+java
+Copy code
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        Set<Integer> set1 = new HashSet<Integer>();
+        for (int num : nums1) {
+            set1.add(num);
+        }
+        Set<Integer> resultSet = new HashSet<Integer>();
+        for (int num : nums2) {
+            if (set1.contains(num)) {
+                resultSet.add(num);
+            }
+        }
+        int[] result = new int[resultSet.size()];
+        int index = 0;
+        for (int num : resultSet) {
+            result[index++] = num;
+        }
+        return result;
+    }
+}
+
+
+This solution has a time complexity of O(n), where n is the length of the input arrays, as it uses HashSet to check for the presence of elements and store the result without duplicates.
+--------------------------
+class Solution {
+    public int singleNumber(int[] nums) {
+        Map<Integer,Integer> m=new HashMap<>();
+        for(int i=0;i<nums.length;i++) {
+            m.put(nums[i],m.getOrDefault(nums[i],0)+1);
+        }
+        for ( Map.Entry<Integer,Integer> entry : m.entrySet()) {
+            Integer key = entry.getKey();
+            Integer val = entry.getValue();
+            if(val==1) return key;
+        }
+        return 0;
+    }
+}
+Finding element that appears only once.
+What is the issue and any optimal solution
+--------------------------
+Your code is correct and should work to find the element that appears only once. However, this solution has a time complexity of O(n) and a space complexity of O(n) due to the use of a HashMap.
+
+An optimal solution with O(n) time complexity and O(1) space complexity can be achieved using the XOR operation. XOR is a bitwise operation that returns 1 if the bits being compared are different and 0 if they are the same. When you XOR a number with itself, the result is 0. Thus, when you XOR all the elements in the array, the unique element will remain since all other numbers that appear twice will cancel each other out.
+
+Here's the optimal solution using the XOR operation:
+
+java
+Copy code
+class Solution {
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
+    }
+}
+
+
+This solution iterates through the input array once, has a time complexity of O(n), and doesn't require any additional data structures, resulting in a space complexity of O(1).
+--------------------------
+class Solution {
+    public int arrayPairSum(int[] nums) {
+        int sum = 0;
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i += 2) {
+            sum = Math.min(nums[i], nums[i+1]);
+        }
+        return sum;
+    }
+}
+Could you eplain me what is wrong in this code
+--------------------------
+There's a small mistake in your code. You are not updating the sum variable correctly inside the loop. Instead of assigning the minimum value of the pair directly to sum, you should add it to the existing sum. Here's the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public int arrayPairSum(int[] nums) {
+        int sum = 0;
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i += 2) {
+            sum += Math.min(nums[i], nums[i + 1]); // Add the minimum value to the existing sum
+        }
+        return sum;
+    }
+}
+
+
+However, since the array is sorted, you can safely assume that nums[i] <= nums[i + 1], so you don't need to call Math.min(). Here's a more concise version of your code:
+
+java
+Copy code
+class Solution {
+    public int arrayPairSum(int[] nums) {
+        int sum = 0;
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i += 2) {
+            sum += nums[i]; // Add the value at index i directly to the sum
+        }
+        return sum;
+    }
+}
+
+
+This solution should work as expected and calculate the correct sum for the input array.

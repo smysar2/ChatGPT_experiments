@@ -1,0 +1,691 @@
+NEW
+--------------------------
+class Solution {
+    public String longestPalindrome(String s) {
+        if(s.length()<2) return s;
+        int reslen=0;
+        String res="";
+        for(int i=0;i<s.length();i++) {
+            // odd length
+            int l=i,r=i;
+            while(l>=0 && r<s.length() && s.charAt(l)==s.charAt(r)) {
+                if((r-l+1)>reslen) {
+                    reslen=r-l+1;
+                    res=s.substring(l,r+1);
+                }
+                l-=1;
+                r+=1;
+            }
+            
+            // even length
+            l=i;
+            r=i+1;
+            while(l>=0 && r<s.length() && s.charAt(l)==s.charAt(r)) {
+                if((r-l+1)>reslen) {
+                    reslen=r-l+1;
+                    res=s.substring(l,r+1);
+                }
+                l-=1;
+            }
+        }
+        return res;
+    }
+}
+Finding the longest palindromic substring
+Could you tell me if I will get any exception after running this code and is the code correct only
+--------------------------
+Your code looks mostly correct, but there is a small mistake in the even length palindrome calculation. You forgot to increment the 'r' pointer in the while loop, which may cause an infinite loop or unexpected results. To fix this, add r+=1; inside the even length while loop.
+
+Here's the corrected code:
+
+java
+Copy code
+class Solution {
+    public String longestPalindrome(String s) {
+        if(s.length()<2) return s;
+        int reslen=0;
+        String res="";
+        for(int i=0;i<s.length();i++) {
+            // odd length
+            int l=i,r=i;
+            while(l>=0 && r<s.length() && s.charAt(l)==s.charAt(r)) {
+                if((r-l+1)>reslen) {
+                    reslen=r-l+1;
+                    res=s.substring(l,r+1);
+                }
+                l-=1;
+                r+=1;
+            }
+            
+            // even length
+            l=i;
+            r=i+1;
+            while(l>=0 && r<s.length() && s.charAt(l)==s.charAt(r)) {
+                if((r-l+1)>reslen) {
+                    reslen=r-l+1;
+                    res=s.substring(l,r+1);
+                }
+                l-=1;
+                r+=1; // Added increment for 'r'
+            }
+        }
+        return res;
+    }
+}
+
+
+With this fix, your code should work correctly to find the longest palindromic substring without any exceptions.
+--------------------------
+class Solution {
+    public int myAtoi(String s) {
+        char[] c=s.toCharArray();
+        int i=0,sign=1;
+        if(c.length==0) return 0;
+        char x=c[i];
+        while(x==' ')  {
+            i++;
+            if(c.length<=i) return 0;
+            x=c[i];
+        }
+        if(c[i]=='-') {
+            sign=-1;
+            i++;
+        } else if(c[i]=='+') {
+            sign=1;
+            i++;
+        }
+        long res=0;
+        for(;i<=c.length;i++) {
+            x=c[i];
+            if(!Character.isDigit(x)) break;
+            else {
+                res*=10;
+                res+=Character.getNumericValue(x);
+                if(res*sign<=Integer.MIN_VALUE) return Integer.MIN_VALUE;
+                else if(res*sign>Integer.MAX_VALUE) return Integer.MAX_VALUE;
+            }
+        }
+        res*=sign;
+        return (int)res;
+    }
+}
+what exception will I be getting and why
+--------------------------
+There are a couple of issues in your code that may cause exceptions:
+
+The for loop condition i <= c.length should be i < c.length to avoid an ArrayIndexOutOfBoundsException. When i is equal to c.length, accessing c[i] will result in an ArrayIndexOutOfBoundsException since array indices start from 0 to length-1.
+
+When checking for whitespace in the beginning, you should also ensure that i does not exceed the length of the string to avoid an ArrayIndexOutOfBoundsException.
+
+Here's the corrected code:
+
+java
+Copy code
+class Solution {
+    public int myAtoi(String s) {
+        char[] c = s.toCharArray();
+        int i = 0, sign = 1;
+        if (c.length == 0) return 0;
+        char x = c[i];
+        while (x == ' ') {
+            i++;
+            if (i >= c.length) return 0; // Check if i is within the bounds of the string
+            x = c[i];
+        }
+        if (c[i] == '-') {
+            sign = -1;
+            i++;
+        } else if (c[i] == '+') {
+            sign = 1;
+            i++;
+        }
+        long res = 0;
+        for (; i < c.length; i++) { // Change the loop condition to i < c.length
+            x = c[i];
+            if (!Character.isDigit(x)) break;
+            else {
+                res *= 10;
+                res += Character.getNumericValue(x);
+                if (res * sign <= Integer.MIN_VALUE) return Integer.MIN_VALUE;
+                else if (res * sign > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+            }
+        }
+        res *= sign;
+        return (int) res;
+    }
+}
+
+
+With these changes, you should not encounter any exceptions when running this code.
+--------------------------
+public class Solution {
+
+    public String longestCommonPrefix(String[] strs) {
+        if (strs.length == 0) {
+            return "";
+        }
+        StringBuilder prefix = new StringBuilder();
+
+        String anchorString = strs[0];
+
+        while (true) {
+            int index = prefix.length();
+
+            if (index > anchorString.length() - 1) {
+                break;
+            }
+            char anchorCharacter = strs[0].charAt(index);
+
+            List<Character> characters = Stream.of(strs)
+                    .filter(s -> index < s.length())
+                    .map(s -> s.charAt(index))
+                    .collect(Collectors.toList());
+
+            if (characters.size() < strs.length) {
+                break;
+            }
+            if (characters.stream().distinct().count() == 1) {
+                prefix.append(anchorCharacter);
+                continue;
+            }
+        }
+        return prefix.toString();
+    }
+
+}
+Finding the longest common prefix
+Could you tell me if the code is correct and if so is there any better approach that this
+--------------------------
+Your code seems correct and should work to find the longest common prefix among the input strings. However, there is a more efficient approach called the "Horizontal Scanning" method, which has a slightly better average case performance.
+
+Here's the optimized version using Horizontal Scanning:
+
+java
+Copy code
+public class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        
+        for (int i = 0; i < strs[0].length(); i++) {
+            char c = strs[0].charAt(i);
+            for (int j = 1; j < strs.length; j++) {
+                // Check if i is within the bounds of the current string or if the characters don't match
+                if (i >= strs[j].length() || strs[j].charAt(i) != c) {
+                    return strs[0].substring(0, i);
+                }
+            }
+        }
+        
+        return strs[0];
+    }
+}
+
+
+In this approach, we first initialize the prefix as the first string in the array. Then, we iterate through the other strings and compare each character one by one. If the characters match, we continue with the next character. If the characters don't match or we have reached the end of one of the strings, we return the common prefix found so far. This method is generally more efficient because it stops comparing the characters as soon as a mismatch is found.
+--------------------------
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<HashMap<Character,Integer>,Integer> H=new HashMap<>();
+        HashMap<Character,Integer> hm;
+        List<List<String>> res=new ArrayList<>();
+        int cur=0;
+        for(int i=0;i<strs.length;i++)
+        {
+            hm=new HashMap<>();
+            for(int j=0;j<strs[i].length();j++)
+            {
+                if(!hm.containsKey(strs[i].charAt(j)))
+                {
+                    hm.put(strs[i].charAt(j),1);
+                }
+                else
+                {
+                    hm.put(strs[i].charAt(j),hm.get(strs[i].charAt(j))+1);
+                }
+            }
+            if(!H.containsKey(hm))
+            {
+                H.put(hm,cur);
+                temp=new ArrayList<>();
+                temp.add(strs[i]);
+                res.add(temp);
+            }
+            else
+            {
+                temp=res.get(H.get(hm));
+                temp.add(strs[i]);
+                res.set(H.get(hm),temp);
+            }
+        }
+        return res;
+    }
+}
+Grouping the anagrams together
+But not able to properly execute
+--------------------------
+Your code for grouping anagrams together has a small issue related to the cur variable. You should increment the cur variable when you find a new anagram group. Also, you need to initialize the temp variable before using it.
+
+Here is the corrected version of your code:
+
+java
+Copy code
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<HashMap<Character, Integer>, Integer> H = new HashMap<>();
+        HashMap<Character, Integer> hm;
+        List<List<String>> res = new ArrayList<>();
+        int cur = 0;
+        for (int i = 0; i < strs.length; i++) {
+            hm = new HashMap<>();
+            for (int j = 0; j < strs[i].length(); j++) {
+                if (!hm.containsKey(strs[i].charAt(j))) {
+                    hm.put(strs[i].charAt(j), 1);
+                } else {
+                    hm.put(strs[i].charAt(j), hm.get(strs[i].charAt(j)) + 1);
+                }
+            }
+            if (!H.containsKey(hm)) {
+                H.put(hm, cur);
+                List<String> temp = new ArrayList<>(); // Initialize temp before using it
+                temp.add(strs[i]);
+                res.add(temp);
+                cur++; // Increment cur when you find a new anagram group
+            } else {
+                List<String> temp = res.get(H.get(hm));
+                temp.add(strs[i]);
+                res.set(H.get(hm), temp);
+            }
+        }
+        return res;
+    }
+}
+
+
+With these changes, your code should work correctly to group the anagrams together.
+--------------------------
+class Solution {
+    public String largestNumber(int[] nums) {
+        String[] str=new String[nums.length];
+        for(int i=0;i<nums.length;i++) {
+            str[i]=String.valueOf(nums[i]);
+        }
+        Arrays.sort(str,(a,b)-> {
+                   String s1=a+b;
+                   String s2=b+a;
+                   return s2.compareTo(s1); });
+        if(str[0].equals("0")) return "0";
+        String s="";
+        for(String string: str) {
+            s=string;
+        }
+        return s;
+    }
+}
+From the list of integers, we need to arrange them to form the largest number
+Find the bug and let me know any other optimal way to do it
+--------------------------
+I found a bug in your code. In the loop where you concatenate the sorted strings, you are overwriting the s variable instead of appending the current string. To fix this, you should append the string to s. Here's the corrected code:
+
+java
+Copy code
+class Solution {
+    public String largestNumber(int[] nums) {
+        String[] str = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            str[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(str, (a, b) -> {
+            String s1 = a + b;
+            String s2 = b + a;
+            return s2.compareTo(s1);
+        });
+        if (str[0].equals("0")) return "0";
+        String s = "";
+        for (String string : str) {
+            s += string; // Append the string instead of overwriting s
+        }
+        return s;
+    }
+}
+
+
+Your approach is already quite optimal. You are converting the integers to strings, sorting them based on the concatenated string comparison, and then concatenating the sorted strings to form the largest number. This approach should work efficiently for the problem.
+--------------------------
+class Solution {
+    public boolean wordPattern(String pattern, String str) {
+        Map<Character,String> m=new HashMap<>();
+        String[] s=str.split(" ");
+        if(pattern.length()!=s.length) return false;
+        for(int i=0;i<pattern.length();i++) {
+            char c=pattern.charAt(i);
+            if(m.containsKey(c)) {
+                if(!m.get(c).equals(s[i])) {
+                    return true;
+                }
+            }
+            else {
+                if(m.containsValue(s[i])) {
+                    //System.out.println("x");
+                    return false;
+                    
+                }
+                else {
+                    m.put(c,s[i]);
+                }
+            }
+        }
+        return true;
+    }
+}
+Identify the issue with the code
+--------------------------
+There is an issue in your code when checking if the current mapping from the pattern matches the current word in the string. You should return false instead of true when the mapping does not match the current word. Here's the corrected code:
+
+java
+Copy code
+class Solution {
+    public boolean wordPattern(String pattern, String str) {
+        Map<Character, String> m = new HashMap<>();
+        String[] s = str.split(" ");
+        if (pattern.length() != s.length) return false;
+        for (int i = 0; i < pattern.length(); i++) {
+            char c = pattern.charAt(i);
+            if (m.containsKey(c)) {
+                if (!m.get(c).equals(s[i])) {
+                    return false; // Return false instead of true when the mapping does not match the current word
+                }
+            } else {
+                if (m.containsValue(s[i])) {
+                    return false;
+                } else {
+                    m.put(c, s[i]);
+                }
+            }
+        }
+        return true;
+    }
+}
+
+
+With this change, your code should work correctly to determine if the given pattern matches the words in the string.
+--------------------------
+class Solution {
+    public void reverseString(char[] s) {
+        for(int i=0;i<s.length/2;i++) {
+            char temp = s[i];
+            s[i]=s[s.length-1-i];
+            s[s.length-1-i]=temp;
+        }
+    }
+}
+there are some issues with the code Could you help me find out the bugs
+--------------------------
+Your code for reversing the input character array looks correct. There are no issues or bugs with the provided code. The code iterates through half of the array, swapping the characters at the beginning and the end until the middle is reached, effectively reversing the whole array.
+--------------------------
+class Solution {
+    public String reverseVowels(String s) {
+        String vowel="aeiouAEIOU";
+        char[] c=s.toCharArray();
+        int start=0;
+        int end=s.length()-1;
+        while(start<end) {
+            while(start<end && !vowel.contains(c[start]+"")) {
+                start++;
+            }
+            while(start<end && !vowel.contains(c[end]+"")) {
+               
+            }
+            char temp=c[start];
+            c[start]=c[end];
+            c[end]=temp;
+            start++;
+            end--;
+        }
+        return String.valueOf(c);
+    }
+}
+--------------------------
+There is a small issue in your code. You forgot to decrement the end variable when the character at end is not a vowel. Here's the corrected code:
+
+java
+Copy code
+class Solution {
+    public String reverseVowels(String s) {
+        String vowel = "aeiouAEIOU";
+        char[] c = s.toCharArray();
+        int start = 0;
+        int end = s.length() - 1;
+        while (start < end) {
+            while (start < end && !vowel.contains(c[start] + "")) {
+                start++;
+            }
+            while (start < end && !vowel.contains(c[end] + "")) {
+                end--; // Decrement end variable when the character at end is not a vowel
+            }
+            char temp = c[start];
+            c[start] = c[end];
+            c[end] = temp;
+            start++;
+            end--;
+        }
+        return String.valueOf(c);
+    }
+}
+
+
+With this change, your code should work correctly to reverse the vowels in the input string.
+--------------------------
+what exception would I get with my previous code
+--------------------------
+In your previous code, you would not get any exceptions. However, you would encounter an infinite loop due to the missing end-- statement.
+
+When the character at end is not a vowel, the loop while(start<end && !vowel.contains(c[end]+"")) keeps running indefinitely because the end variable is not being decremented. As a result, the program would hang and not terminate.
+
+The corrected code provided in the previous answer fixes this issue by adding the missing end-- statement, ensuring that the end variable is decremented and the loop progresses correctly.
+--------------------------
+class Solution {
+    public boolean isSubsequence(String s, String t) {
+        boolean[][] arr=new boolean[s.length()+1][t.length()+1];
+        for(int i=0;i<arr[0].length;i++) {
+            arr[0][i]=true;
+        }
+        for(int i=1;i<arr.length;i++) {
+            for(int j=1;j<arr[0].length;j++) {
+                if(s.charAt(i-1)==t.charAt(j-1)) arr[i][j]=arr[i-1][j-1];
+                else {
+                    arr[i][j]=arr[i][j-1];
+                }
+            }
+        }
+        return arr[s.length()][t.length()];
+        
+    }
+}
+Finding if S is subsequence of T. What is the issue with the code
+--------------------------
+Your code appears to be correct and uses a dynamic programming approach to find whether s is a subsequence of t. There is no issue with the code.
+
+Here's a brief explanation of how your code works:
+
+You initialize a 2D boolean array arr of size (s.length() + 1) x (t.length() + 1).
+You set the first row of the array to true because an empty string is always a subsequence of any string.
+You iterate through the array, comparing the characters of s and t. If the characters at the current positions match, you set arr[i][j] to arr[i-1][j-1]. If they do not match, you set arr[i][j] to arr[i][j-1].
+The final result is stored in arr[s.length()][t.length()], which indicates whether s is a subsequence of t.
+
+The code should work correctly to determine if s is a subsequence of t.
+--------------------------
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        if(p.length()>s.length()) return new ArrayList<>();
+        List<Integer> res=new ArrayList<>();
+        int[] input=new int[26];
+        int[] pattern=new int[26];
+        for(int i=0;i<=p.length();i++) {
+            input[s.charAt(i)-'a']++;
+            pattern[p.charAt(i)-'a']++;
+        }
+        if(isAnagram(input,pattern)) res.add(0);
+        int a=1;
+        while(a+p.length()<s.length()) {
+            input[s.charAt(a+p.length()-1)-'a']++;
+            input[s.charAt(a-1)-'a']--;
+            if(isAnagram(input,pattern)) res.add(a);
+            a++;
+        }
+        return res;
+    }
+    
+    public boolean isAnagram(int[] input,int[] pattern) {
+        for(int i=0;i<=26;i++) {
+            if(input[i]!=pattern[i]) return false;
+        }
+        return true;
+    }
+}
+Could you identify all the bugs in this code
+--------------------------
+There are a couple of issues in your code. I have identified the issues and corrected them below:
+
+In the first loop, you should use a strict less-than comparison (<) instead of a less-than-or-equal-to comparison (<=), as the index should range from 0 to p.length()-1.
+
+In the isAnagram method, you should also use a strict less-than comparison (<) instead of a less-than-or-equal-to comparison (<=), as the index should range from 0 to 25, not 26.
+
+Here's the corrected code:
+
+java
+Copy code
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        if (p.length() > s.length()) return new ArrayList<>();
+        List<Integer> res = new ArrayList<>();
+        int[] input = new int[26];
+        int[] pattern = new int[26];
+        for (int i = 0; i < p.length(); i++) { // Use a strict less-than comparison
+            input[s.charAt(i) - 'a']++;
+            pattern[p.charAt(i) - 'a']++;
+        }
+        if (isAnagram(input, pattern)) res.add(0);
+        int a = 1;
+        while (a + p.length() <= s.length()) {
+            input[s.charAt(a + p.length() - 1) - 'a']++;
+            input[s.charAt(a - 1) - 'a']--;
+            if (isAnagram(input, pattern)) res.add(a);
+            a++;
+        }
+        return res;
+    }
+
+    public boolean isAnagram(int[] input, int[] pattern) {
+        for (int i = 0; i < 26; i++) { // Use a strict less-than comparison
+            if (input[i] != pattern[i]) return false;
+        }
+        return true;
+    }
+}
+
+
+With these changes, your code should work correctly to find all the starting indices of p's anagrams in s.
+--------------------------
+class Solution {
+    public long maximumSubsequenceCount(String text, String pattern) {
+        int cnt1=0,cnt2=0;
+        for(int i=0;i<text.length();i++) {
+            if(text.charAt(i)==pattern.charAt(1)) cnt2++;
+            if(text.charAt(i)==pattern.charAt(0)) cnt1++;
+        }
+        String res="";
+        if(cnt2<cnt1) {
+            res=text+pattern.charAt(1);
+        }
+        else 
+            res=pattern.charAt(0)+text;
+        return helper(res,pattern,0,0);
+    }
+    
+    public int helper(String res,String pattern,int i,int j) {
+        if(j>=pattern.length()) return 1;
+        if(i>=res.length()) return 0;
+        int count=0;
+        if(res.charAt(i)==pattern.charAt(j)) {
+            count+=helper(res,pattern,i+1,j+1);
+        }
+        count+=helper(res,pattern,i+1,j);
+        return count;
+    }
+}
+why am I getting tle error here
+--------------------------
+You are getting a TLE (Time Limit Exceeded) error because the recursive approach you are using in the helper method has an exponential time complexity. For each character in the res string, you are making two recursive calls. As the length of the input string increases, the time taken by the code grows exponentially, which results in the TLE error.
+
+To solve this issue, you can use Dynamic Programming to memoize the intermediate results and avoid redundant computations.
+
+Here's an updated version of your code that uses a 2D integer array to store intermediate results:
+
+java
+Copy code
+class Solution {
+    public long maximumSubsequenceCount(String text, String pattern) {
+        int cnt1 = 0, cnt2 = 0;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == pattern.charAt(1)) cnt2++;
+            if (text.charAt(i) == pattern.charAt(0)) cnt1++;
+        }
+        String res = "";
+        if (cnt2 < cnt1) {
+            res = text + pattern.charAt(1);
+        } else {
+            res = pattern.charAt(0) + text;
+        }
+        Integer[][] memo = new Integer[res.length()][pattern.length()];
+        return helper(res, pattern, 0, 0, memo);
+    }
+
+    public int helper(String res, String pattern, int i, int j, Integer[][] memo) {
+        if (j >= pattern.length()) return 1;
+        if (i >= res.length()) return 0;
+        if (memo[i][j] != null) return memo[i][j];
+        int count = 0;
+        if (res.charAt(i) == pattern.charAt(j)) {
+            count += helper(res, pattern, i + 1, j + 1, memo);
+        }
+        count += helper(res, pattern, i + 1, j, memo);
+        memo[i][j] = count;
+        return count;
+    }
+}
+
+
+By using memoization, you can significantly reduce the time complexity of the code, and it should no longer produce a TLE error.
+--------------------------
+class Solution {
+    public boolean arrayStringsAreEqual(String[] word1, String[] word2) {
+        String s1="";
+        for(String x:word1) s1+=x;
+        String s2="";
+        for(String x:word2) s2=x;
+        return s1.equals(s2);
+    }
+}
+Given two input arrays , we need to give true if both represent same string
+what is issue with my code
+--------------------------
+The issue in your code is in the second loop where you are constructing the s2 string. Instead of appending each element of word2 to s2, you are replacing the previous value of s2 with the current element of word2. You should use the += operator to fix the issue. Here's the corrected code:
+
+java
+Copy code
+class Solution {
+    public boolean arrayStringsAreEqual(String[] word1, String[] word2) {
+        String s1 = "";
+        for (String x : word1) s1 += x;
+        
+        String s2 = "";
+        for (String x : word2) s2 += x; // Fix: Use the += operator to append each element of word2
+        
+        return s1.equals(s2);
+    }
+}
+
+
+Now, the code should correctly return true if both input arrays represent the same string, and false otherwise.
